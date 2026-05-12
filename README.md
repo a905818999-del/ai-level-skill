@@ -39,15 +39,15 @@ AI-level，帮我测一下 AI 应用等级
 
 ```text
 请用 skill-installer 安装这个 skill：
-https://github.com/a905818999-del/ai-level-skill/tree/feat/ai-level-release/ai-level
+https://github.com/a905818999-del/ai-level-skill/tree/v0.1.0/ai-level
 ```
 
-如果安装器无法自动识别带 `/` 的分支名，可以用下面的命令安装。
+也可以直接运行系统自带安装脚本：
 
 也可以直接运行系统自带安装脚本：
 
 ```powershell
-python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo a905818999-del/ai-level-skill --ref feat/ai-level-release --path ai-level
+python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo a905818999-del/ai-level-skill --ref v0.1.0 --path ai-level
 ```
 
 安装后重启 Codex，让新 skill 生效。
@@ -76,7 +76,7 @@ python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-s
 它会用一个生活综合场景，看你到底是“会问 AI”，还是已经能把 AI 做成流程、工具或可复用系统。
 
 安装链接：
-https://github.com/a905818999-del/ai-level-skill/tree/feat/ai-level-release/ai-level
+https://github.com/a905818999-del/ai-level-skill/tree/v0.1.0/ai-level
 
 安装后在 Codex 里输入 /ai-level 就能开始。
 大概 3-5 分钟，最后会给你一个等级区间、确认等级和下一步建议。
