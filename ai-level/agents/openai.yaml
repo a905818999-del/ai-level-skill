@@ -1,0 +1,4 @@
+interface:
+  display_name: "AI Level"
+  short_description: "Run a short AI application level test."
+  default_prompt: "Use this skill to run a short AI application level diagnostic and produce a level report with next-step advice."

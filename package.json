@@ -1,0 +1,8 @@
+{
+  "name": "ai-level-skill",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "test": "python ai-level/scripts/sample_run.py --check"
+  }
+}
