@@ -1,4 +1,5 @@
 import argparse
+from pathlib import Path
 import textwrap
 
 
@@ -19,6 +20,63 @@ ANCHOR_ANSWER = """\
 2. 我会要求 Agent 输出工具调用记录、来源链接、查询时间和关键字段截图或引用；像火车票和酒店这种最终还要自己点进去确认，避免它假装查过。
 3. 反馈不会只说“再改改”，我会按固定检查项改：每天步行强度、交通折返、预算偏差、老人休息点、小孩兴趣点、来源是否过期。改完后让它说明这一版具体改了什么。
 """
+
+EVAL_CASES = [
+    {
+        "name": "beginner-route",
+        "baseline": "1A 2A 3A",
+        "scenario": "First Real Ask",
+        "answer": "我可能只会问 AI：帮我写一下。如果不好，我就再问一次。",
+        "expected": "确认 Lv.1",
+        "must_include": ["不要急着上工具", "先学会补充对象、语气、限制和例子"],
+        "must_not_include": ["Agent", "Skill", "MCP", "确认 Lv.3"],
+    },
+    {
+        "name": "mid-workflow-route",
+        "baseline": "1C 2C 3B",
+        "scenario": "Expensive Family Purchase",
+        "answer": "我会告诉 AI 预算、用途和家里人在意的点，让它解释参数、做对比表、列风险，再提醒我哪些信息要自己核对。",
+        "expected": "确认 Lv.4-Lv.5",
+        "must_include": ["能把模糊购买决策拆成标准和核对项", "下一步是固定成一张决策表"],
+        "must_not_include": ["确认 Lv.6", "确认 Lv.7"],
+    },
+    {
+        "name": "high-baseline-weak-answer",
+        "baseline": "1D 2D 3D",
+        "scenario": "Personal Workflow Automation",
+        "answer": "我会让 Agent 搜资料、总结、生成结果。如果不行就让它再改，之后可以做成 Skill。",
+        "expected": "确认 Lv.6",
+        "must_include": ["工具名不是证据", "还没看到输入规则、校验规则和复用后的改进"],
+        "must_not_include": ["确认 Lv.7", "确认 Lv.8"],
+    },
+    {
+        "name": "real-lv7-system-designer",
+        "baseline": "1D 2CD 3D",
+        "scenario": "Knowledge Product Launch",
+        "answer": "我会先定义受众和产物标准，收集材料到 source folder，让 AI 聚类、出结构、写初稿，再跑反 slop 检查和事实核对。最后输出分享页，并保留输入模板、检查表和失败处理规则，下次复用。",
+        "expected": "确认 Lv.7",
+        "must_include": ["已经在设计流程，而不是只让 AI 生成内容", "Lv.8 还需要真实跑过、复用过、改进过"],
+        "must_not_include": ["确认 Lv.8"],
+    },
+    {
+        "name": "real-lv8-evidence",
+        "baseline": "1D 2D 3D",
+        "scenario": "Personal Workflow Automation",
+        "answer": "这个周报流程已经跑了四次。第一版只汇总链接，第二周误收了几条无关内容，所以我加了来源时间、why-it-matters、reject reason 和人工确认字段。现在同事也能填 source folder 跑同一套模板。",
+        "expected": "确认 Lv.8",
+        "must_include": ["有多次运行、失败后改规则、可复用产物", "如果同事能稳定使用，才继续看 Lv.9/Lv.10"],
+        "must_not_include": ["确认 Lv.10"],
+    },
+    {
+        "name": "lv9-signal-not-confirmed",
+        "baseline": "1D 2D 3D",
+        "scenario": "Personal AI Operating System",
+        "answer": "我的方法是 AI 做资料扩展、反方评审和初稿，我自己定目标、排序冲突和做最终判断。旅行、采购、学习和项目复盘都用类似结构。",
+        "expected": "Lv.9 signal｜确认 Lv.8-Lv.9",
+        "must_include": ["方法论语言很强", "还需要跨场景真实产物或别人能用的证据"],
+        "must_not_include": ["确认 Lv.10"],
+    },
+]
 
 
 def dedent(text):
@@ -48,7 +106,7 @@ def render_welcome():
 
         测试怎么进行：
         1. 先用 3 个小问题了解你的基础使用情况。
-        2. 再给你一个生活综合场景，看你会怎么用 AI 解决。
+        2. 再根据你的基础回答，给你一个更适合你当前用法的真实场景，看你会怎么用 AI 解决。
         3. 如果有些地方需要看得更清楚，会补一个追问。
         4. 最后给出等级区间、确认等级、判断依据和下一步建议。
 
@@ -95,14 +153,12 @@ def render_scenario():
     prompt = dedent(
         """
         收到。你的基础信息显示：你已经把 AI 用在真实任务里，也有验证意识和工具流经验。
+        我会给你一个更适合你当前用法的生活场景。基础题只负责选题，不直接定级。
 
-        你要安排一次 5 天家庭旅行。
+        你要安排一次 5 天家庭旅行。同行里有老人、小孩和成年人，大家体力、兴趣和耐心都不一样。
 
-        基本情况：
-        - 同行人包括老人、小孩和成年人，大家体力和兴趣不同。
-        - 预算有限，希望兼顾舒适度和性价比。
-        - 时间在下个月，天气、人流、交通住宿都有不确定性。
-        - 你希望最后得到一份能直接执行的旅行方案。
+        预算不能乱花，时间在下个月，交通、天气、人流、住宿评价都可能变化。
+        你希望最后不是一份漂亮攻略，而是一份同行人真的能照着走、也知道为什么这么安排的方案。
 
         如果你准备用 AI 帮你把这件事做好，你会怎么做？
 
@@ -197,8 +253,31 @@ def build_output():
         render_scenario(),
         render_anchor(),
         render_report(),
+        render_eval_summary(),
     ]
     return "\n\n---\n\n".join(sections)
+
+
+def render_eval_summary():
+    lines = ["# multi-route regression cases"]
+    for case in EVAL_CASES:
+        lines.extend(
+            [
+                "",
+                f"## {case['name']}",
+                f"Baseline: {case['baseline']}",
+                f"Scenario: {case['scenario']}",
+                f"Answer: {case['answer']}",
+                f"Expected: {case['expected']}",
+                "Required report signals:",
+            ]
+        )
+        for phrase in case["must_include"]:
+            lines.append(f"- {phrase}")
+        lines.append("Forbidden over-scoring:")
+        for phrase in case["must_not_include"]:
+            lines.append(f"- {phrase}")
+    return "\n".join(lines)
 
 
 def run_checks(output):
@@ -217,6 +296,7 @@ def run_checks(output):
 
     required_phrases = [
         "第 2 题可以多选",
+        "基础题只负责选题，不直接定级",
         "你的 AI 应用等级：Lv.7-Lv.8｜确认 Lv.7",
         "离 Lv.8 差在哪",
         "可分享的旅行决策页",
@@ -226,6 +306,63 @@ def run_checks(output):
     for phrase in required_phrases:
         if phrase not in output:
             raise AssertionError(f"required phrase missing: {phrase}")
+
+    if "匹配难度" in output:
+        raise AssertionError("user-facing exam-like wording leaked: 匹配难度")
+
+    for case in EVAL_CASES:
+        if case["name"] not in output:
+            raise AssertionError(f"eval case missing from output: {case['name']}")
+        if case["expected"] not in output:
+            raise AssertionError(f"eval expected result missing: {case['name']}")
+        for phrase in case["must_include"]:
+            if phrase not in output:
+                raise AssertionError(f"eval required phrase missing ({case['name']}): {phrase}")
+
+    lv8 = next(case for case in EVAL_CASES if case["name"] == "real-lv8-evidence")
+    lv8_block = _case_block(output, lv8["name"])
+    if "多次运行" not in lv8_block or "失败后改规则" not in lv8_block:
+        raise AssertionError("Lv.8 case missing reuse/iteration evidence")
+
+    root = Path(__file__).resolve().parents[1]
+    scenario_bank = root / "references" / "scenario-bank.md"
+    if not scenario_bank.exists():
+        raise AssertionError("scenario-bank.md missing")
+
+    scenario_text = scenario_bank.read_text(encoding="utf-8")
+    scenario_required = [
+        "First Real Ask",
+        "Family Travel 2.0",
+        "Personal Workflow Automation",
+        "Personal AI Operating System",
+        "Baseline selects the lane; practical evidence confirms the level.",
+    ]
+    for phrase in scenario_required:
+        if phrase not in scenario_text:
+            raise AssertionError(f"scenario-bank phrase missing: {phrase}")
+
+    anchor_required = [
+        "Home Move And New Setup",
+        "Expensive Family Purchase",
+        "Eight-Week Learning Sprint",
+        "Messy Work Rescue",
+        "Knowledge Product Launch",
+        "Personal Workflow Automation",
+        "Personal AI Operating System",
+        "Scenario-Specific Anchor Examples",
+    ]
+    for phrase in anchor_required:
+        if phrase not in scenario_text:
+            raise AssertionError(f"scenario-specific anchor missing: {phrase}")
+
+
+def _case_block(output, case_name):
+    marker = f"## {case_name}"
+    start = output.index(marker)
+    next_start = output.find("\n## ", start + len(marker))
+    if next_start == -1:
+        return output[start:]
+    return output[start:next_start]
 
 
 def main():

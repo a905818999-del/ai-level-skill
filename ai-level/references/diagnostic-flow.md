@@ -39,7 +39,7 @@ Lv.10 一人军团：有成熟的 AI 工作系统，一个人能完成过去一�
 
 ## Baseline Gate Questions
 
-Ask these quickly before the practical scenario. They are not the main test; they provide ceilings and context.
+Ask these quickly before the practical scenario. They are not the main test; they provide ceilings, context, and a soft route into the right scenario lane.
 
 Tell the user: "直接写选项即可，例如 `1C 2CD 3D`。第 2 题可以多选，其余题单选。"
 
@@ -61,13 +61,62 @@ Tell the user: "直接写选项即可，例如 `1C 2CD 3D`。第 2 题可以多�
    - C. I have a checklist, template, or repeated workflow
    - D. I have built or used Agent/Skill/MCP/tool workflows for repeated tasks
 
+## Baseline Soft Routing
+
+Use the baseline answers to choose the scenario lane. Do not reveal the lane as a grade.
+
+The route band selects the diagnostic pressure; the practical answer and evidence gates determine the final score.
+
+| Route band | Target range | Typical baseline pattern | Scenario source |
+| --- | --- | --- | --- |
+| basic | Lv.0-Lv.3 | Q1 A/B, Q2 A/B, Q3 A | `scenario-bank.md` basic scenarios |
+| workflow | Lv.3-Lv.6 | Q1 B/C, Q2 C/D, Q3 B/C | `scenario-bank.md` workflow scenarios |
+| system | Lv.6-Lv.8 | Q1 C/D, Q2 D, Q3 C/D, or user mentions tools/agents/reuse | `scenario-bank.md` system scenarios |
+| method | Lv.8-Lv.10 signal | User has real artifact, reuse, iteration, team use, or cross-domain method evidence | `scenario-bank.md` method scenario |
+
+Routing heuristic:
+
+```text
+If Q1=A and Q3=A -> basic.
+If Q1=B and Q2 does not include D -> basic or workflow.
+If Q1=B/C and Q2 includes C -> workflow.
+If Q1=C/D and Q2 includes D -> workflow or system.
+If Q3=C and Q2 includes D -> system.
+If Q3=D -> system by default.
+If Q3=D plus real reuse/artifact/team-use evidence -> method.
+```
+
+Guardrails:
+
+- Never route to method lane from baseline alone.
+- Never confirm Lv.8+ from baseline alone.
+- If baseline suggests high level but the practical answer is vague, downshift confirmed level.
+- If baseline suggests low level but the practical answer is strong, allow upgrade.
+- If Q1 says no real AI usage in the past 30 days, confirmed level should not exceed Lv.4 unless the user gives strong real evidence that contradicts the baseline.
+
 ## Main Practical Scenario
 
-Do not hard-code one question forever. Use the travel scenario as the default because it is easy for most people to answer, but rotate scenarios when the same group is testing repeatedly, when the user asks whether there are other cases, or when the user's context clearly fits another scenario.
+Pick exactly one scenario from `references/scenario-bank.md`.
+
+Do not hard-code one question forever. Use Family Travel 2.0 as the default for first-time workflow/system users because it is easy for most people to answer, but rotate scenarios when the same group is testing repeatedly, when the user asks whether there are other cases, or when the user's context clearly fits another scenario.
 
 Pick one scenario. Do not ask all of them.
 
-### Scenario A: Family Travel
+Selection rules:
+
+- For basic route, use `First Real Ask`.
+- For workflow route, use one of: `Family Travel 2.0`, `Home Move And New Setup`, `Expensive Family Purchase`, `Weekend Plan With Mixed Preferences`, or `Eight-Week Learning Sprint`.
+- For system route, use one of: `Family Travel 2.0`, `Messy Work Rescue`, `Knowledge Product Launch`, or `Personal Workflow Automation`.
+- For method route, use `Personal AI Operating System`.
+- Use `Plan Breakdown Crisis` when you want a stress test after the user already shows workflow maturity.
+- Use `Messy Work Rescue` only when the baseline suggests workflow/tool maturity; it is too abstract for beginners.
+- Use `Personal AI Operating System` only when the user already shows real reuse or artifact evidence.
+
+### Legacy Inline Scenarios
+
+The following four prompts remain available as short fallbacks. Prefer `scenario-bank.md` for the expanded scenario set.
+
+### Legacy Scenario A: Family Travel
 
 ```text
 你要安排一次 5 天家庭旅行。
@@ -81,7 +130,7 @@ Pick one scenario. Do not ask all of them.
 如果你准备用 AI 帮你把这件事做好，你会怎么做？
 ```
 
-### Scenario B: Home Move / Setup
+### Legacy Scenario B: Home Move / Setup
 
 ```text
 你要在 3 周内完成一次搬家和新家配置。
@@ -95,7 +144,7 @@ Pick one scenario. Do not ask all of them.
 如果你准备用 AI 帮你把这件事做好，你会怎么做？
 ```
 
-### Scenario C: Learning / Exam Plan
+### Legacy Scenario C: Learning / Exam Plan
 
 ```text
 你要帮一个人制定 8 周学习计划。
@@ -109,7 +158,7 @@ Pick one scenario. Do not ask all of them.
 如果你准备用 AI 帮你把这件事做好，你会怎么做？
 ```
 
-### Scenario D: Messy Work Problem
+### Legacy Scenario D: Messy Work Problem
 
 ```text
 你要把一件混乱的工作推进清楚。
@@ -146,6 +195,7 @@ Construct the follow-up from the user's own claim. The follow-up is not a fixed 
 3. Ask only the top 2-3 missing gaps. Do not re-ask about things already answered.
 4. If the user already described many tools, do not ask "which tools" again. Ask how those tools are verified and orchestrated.
 5. If the user already described validation, ask for the exact rule or threshold, not "how do you validate?"
+6. For scenario-specific wording, adapt from `references/scenario-bank.md` -> `Scenario-Specific Anchor Examples`. Delete questions the user already answered.
 
 Generic shape:
 

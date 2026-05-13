@@ -19,6 +19,9 @@ Use the table as a guide, then apply evidence gates from `rubric.md`.
 
 | Pattern | Signal level |
 | --- | --- |
+| No practical AI use, or only awareness | Lv.0-Lv.1 |
+| One-shot asks and simple retries | Lv.1-Lv.2 |
+| Follow-up correction without much structure | Lv.2 |
 | Mostly generic prompt, some constraints | Lv.3 |
 | Uses AI to explore unfamiliar options | Lv.4 |
 | Breaks task into stages and templates | Lv.5 |
@@ -27,6 +30,17 @@ Use the table as a guide, then apply evidence gates from `rubric.md`.
 | Shows real artifact, reuse, iteration | Lv.8 |
 | Explains method, human/AI boundaries, transfer across domains | Lv.9 |
 | Mature multi-domain personal/team operating system | Lv.10 |
+
+## Baseline Routing
+
+Baseline choices are for scenario selection, not grading.
+
+- `basic`: use when the user has little recent AI usage or mostly retries/simple asks.
+- `workflow`: use when the user uses AI for real tasks and can add context, steps, or checks.
+- `system`: use when the user mentions tools, agents, MCP, automation, templates, or reusable workflows.
+- `method`: use only when the user has real reuse, artifacts, cross-domain examples, team use, or explicit human/AI boundary thinking.
+
+The final report should not say "your baseline route is system". It should only report signal level, confirmed level, and evidence strength.
 
 ## Ceilings
 
@@ -71,6 +85,109 @@ Use plain language with a light Weibo/Xiaohongshu feel:
 
 一个小挑战：
 ……
+```
+
+## Lane-Specific Report Guidance
+
+Use the same final report structure, but adjust the gap diagnosis by route. Do not expose route labels to the user.
+
+### Basic Users
+
+Use when the user is around Lv.0-Lv.3.
+
+Tone:
+
+- Gentle and practical.
+- No shame, no "you are behind".
+- Do not recommend Agent, MCP, Skill, automation, or complex workflows.
+
+Core message:
+
+```text
+你现在最值得练的不是工具，而是把问题说清楚：对象、背景、限制、例子、想要的格式。
+```
+
+Good next challenge:
+
+```text
+找一个低风险小任务，连续改问 3 次：第一次直接问，第二次补背景，第三次加格式和例子。比较三次答案差在哪里。
+```
+
+### Workflow Users
+
+Use when the user is around Lv.3-Lv.6.
+
+Tone:
+
+- Encourage real task use, but push toward structure.
+- Name the user's ability to turn a vague task into stages.
+
+Core message:
+
+```text
+你已经不只是会问了，开始会把任务拆开。下一步是把拆法固定下来：输入清单、步骤、输出格式、检查项。
+```
+
+Good next challenge:
+
+```text
+把一个重复任务写成一页流程：开始前需要什么、AI 做哪几步、你检查什么、最后产出什么。
+```
+
+### System Users
+
+Use when the user is around Lv.6-Lv.8 signal.
+
+Tone:
+
+- Be stricter.
+- Distinguish tool use from system design.
+- Do not flatter tool-name dropping.
+
+Core message:
+
+```text
+会调用工具是 Lv.6 信号；能规定工具怎么协作、怎么校验、失败后怎么改，才接近 Lv.7。
+```
+
+Lv.8 gate:
+
+```text
+Lv.8 看的不是你会不会设计流程，而是这个流程有没有真实跑过、复用过、失败后改过。
+```
+
+Good next challenge:
+
+```text
+把同一个流程跑两次。第二次必须记录：哪条规则是第一次踩坑后加的，哪个字段让结果更可靠。
+```
+
+### Method Users
+
+Use when the user shows Lv.8-Lv.10 signals.
+
+Tone:
+
+- Respectful but strict.
+- Treat method language as signal, not proof.
+- Ask for cross-domain evidence and other-user evidence.
+
+Core message:
+
+```text
+你已经在谈方法了，但方法要靠证据站住：跨场景案例、真实产物、复用记录、别人能不能照着用。
+```
+
+Lv.9/Lv.10 gate:
+
+```text
+Lv.9 要看到稳定的人机分工原则；Lv.10 要看到多领域系统和他人可用性。一个漂亮案例不够。
+```
+
+Good next challenge:
+
+```text
+选两个不同领域的 AI 流程，各写一张操作卡：AI 负责什么、人负责什么、校验什么、失败后改过什么。能被别人照着跑，才继续看 Lv.10。
 ```
 
 ## Next-Level Advice

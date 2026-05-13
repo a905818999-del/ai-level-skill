@@ -2,7 +2,7 @@
 
 一个短测 AI 应用等级的 Codex Skill。
 
-它不是让用户自评“我会不会用 AI”，而是用 3 个基础问题、1 个生活综合场景和必要时的追问，判断用户大概处在 Lv.3-Lv.10 的哪一段，并给出下一步建议。
+它不是让用户自评“我会不会用 AI”，而是用 3 个基础问题做软分流，再给一个更适合当前用法的真实场景和必要追问，判断用户大概处在哪一段，并给出下一步建议。
 
 ## 适合谁
 
@@ -27,9 +27,11 @@ AI-level，帮我测一下 AI 应用等级
 测试一般包括：
 
 1. 三个基础选择题。
-2. 一个 5 天家庭旅行的综合场景。
+2. 根据基础回答选择一个生活、工作、创作或系统设计场景。
 3. 如果回答里出现 Agent、Skill、MCP、自动化或复用系统，会追加一个落地追问。
 4. 输出等级区间、确认等级、判断依据和下一步建议。
+
+基础题只负责选题，不直接定级。最终等级仍然看实操回答、追问证据和是否有真实产物/复用/迭代。
 
 ## 一键安装
 
@@ -39,15 +41,13 @@ AI-level，帮我测一下 AI 应用等级
 
 ```text
 请用 skill-installer 安装这个 skill：
-https://github.com/a905818999-del/ai-level-skill/tree/v0.1.1/ai-level
+https://github.com/a905818999-del/ai-level-skill/tree/v0.1.2/ai-level
 ```
 
 也可以直接运行系统自带安装脚本：
 
-也可以直接运行系统自带安装脚本：
-
 ```powershell
-python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo a905818999-del/ai-level-skill --ref v0.1.1 --path ai-level
+python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-skill-from-github.py" --repo a905818999-del/ai-level-skill --ref v0.1.2 --path ai-level
 ```
 
 安装后重启 Codex，让新 skill 生效。
@@ -73,10 +73,10 @@ python "$env:USERPROFILE\.codex\skills\.system\skill-installer\scripts\install-s
 ```text
 我做了一个 AI 应用等级小测试，不是那种很长的问卷。
 
-它会用一个生活综合场景，看你到底是“会问 AI”，还是已经能把 AI 做成流程、工具或可复用系统。
+它会先用 3 个小问题判断大概测试区间，再给你一个真实场景，看你到底是“会问 AI”，还是已经能把 AI 做成流程、工具或可复用系统。
 
 安装链接：
-https://github.com/a905818999-del/ai-level-skill/tree/v0.1.1/ai-level
+https://github.com/a905818999-del/ai-level-skill/tree/v0.1.2/ai-level
 
 安装后在 Codex 里输入 /ai-level 就能开始。
 大概 3-5 分钟，最后会给你一个等级区间、确认等级和下一步建议。
@@ -92,6 +92,8 @@ https://github.com/a905818999-del/ai-level-skill/tree/v0.1.1/ai-level
 - `quick_validate.py C:\Users\zhen.qian\.codex\skills\ai-level`
 - `python -m py_compile ai-level\scripts\sample_run.py`
 - 模拟同事样本试跑：`release/simulated-colleague-trials-20260512.md`
+- 全场景矩阵 QA：`release/qa-all-scenarios-all-levels-ceo-review-20260513.md`
+- 场景库严格评审：`release/scenario-bank-full-review-20260513.md`
 
 ## 目录
 
@@ -100,6 +102,7 @@ ai-level/
   SKILL.md
   agents/openai.yaml
   references/
+    scenario-bank.md
   scripts/sample_run.py
 release/
   simulated-colleague-trials-20260512.md

@@ -26,10 +26,11 @@ When the user wants to run the test, follow this sequence:
 
 1. Show the welcome page from `references/diagnostic-flow.md`.
 2. Ask the three baseline gate questions from `references/diagnostic-flow.md`.
-3. Ask the practical scenario question from `references/diagnostic-flow.md`.
-4. Score the answer using `references/rubric.md` and `references/scoring-guide.md`.
-5. If the answer shows Lv.7+ signals, ask one adaptive anchor follow-up before final scoring.
-6. Produce the final report using the report template in `references/scoring-guide.md`.
+3. Use the baseline soft-routing rules in `references/diagnostic-flow.md` to choose a diagnostic lane. This lane selects the scenario; it is not the final grade.
+4. Ask one practical scenario from `references/scenario-bank.md`. Use the legacy inline scenarios in `references/diagnostic-flow.md` only as fallbacks.
+5. Score the answer using `references/rubric.md` and `references/scoring-guide.md`.
+6. If the answer shows Lv.7+ signals, ask one adaptive anchor follow-up before final scoring.
+7. Produce the final report using the report template in `references/scoring-guide.md`.
 
 If the user already provided an answer, skip directly to scoring and generate the adaptive anchor follow-up or final report as appropriate.
 
@@ -37,6 +38,7 @@ If the user already provided an answer, skip directly to scoring and generate th
 
 - Do not ask the user to self-select a level.
 - Do not reward tool-name dropping unless the answer includes process, validation, and reuse details.
+- Do not treat the baseline route as a grade. Baseline selects the diagnostic lane; practical evidence confirms the level.
 - Separate `signal level` from `confirmed level`.
 - Use a range when evidence is mixed, for example `Lv.7-Lv.8, confirmed Lv.7`.
 - Treat Lv.8+ as evidence-gated. A single theoretical answer can show Lv.8 signals, but confirmation requires real cases, artifacts, reuse, or method evidence.
@@ -48,6 +50,7 @@ If the user already provided an answer, skip directly to scoring and generate th
 ## Reference Files
 
 - `references/diagnostic-flow.md`: user-facing questions, scenario prompt, and anchor follow-up patterns.
+- `references/scenario-bank.md`: expanded scenario bank, lane selection, hidden diagnostic pressure, and strict reviewer notes.
 - `references/rubric.md`: level definitions, evidence strength, and anti-inflation gates.
 - `references/scoring-guide.md`: scoring dimensions, mapping rules, report template, and next-level advice.
 - `references/calibration-cases.md`: synthetic colleague cases for tuning and sanity checks.
