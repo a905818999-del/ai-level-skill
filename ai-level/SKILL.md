@@ -40,10 +40,12 @@ If the user already provided an answer, skip directly to scoring and generate th
 - Do not reward tool-name dropping unless the answer includes process, validation, and reuse details.
 - Do not treat the baseline route as a grade. Baseline selects the diagnostic lane; practical evidence confirms the level.
 - Separate `signal level` from `confirmed level`.
+- Confirmed level must respect the formula in `references/scoring-guide.md`: capability shown, evidence-strength ceiling, and scenario contract ceiling. Keep higher claims as signal unless the override gate is met.
 - Use a range when evidence is mixed, for example `Lv.7-Lv.8, confirmed Lv.7`.
 - Treat Lv.8+ as evidence-gated. A single theoretical answer can show Lv.8 signals, but confirmation requires real cases, artifacts, reuse, or method evidence.
 - Do not expose internal scoring thoughts before the anchor follow-up. Ask the follow-up directly and naturally.
-- The anchor follow-up must be adaptive. First note what the user already covered, then ask only about the missing 2-3 evidence gaps. Do not repeat a full checklist if the answer already mentioned inputs, tools, validation, reuse, or output.
+- The anchor follow-up must be adaptive. First cite at least two concrete elements from the user's answer, then ask only about the missing 2-3 evidence gaps. Do not repeat a full checklist if the answer already mentioned inputs, tools, validation, reuse, or output.
+- Every final report must give the hard reason the next level is not confirmed yet, such as missing real runs, missing artifact, missing failure-based iteration, missing cross-domain proof, or missing other-user use.
 - Keep wording plain and non-judgmental. Say "evidence is not enough yet", not "you are bluffing".
 - Give next-level advice based on the user's actual bottleneck, not generic AI learning tips.
 

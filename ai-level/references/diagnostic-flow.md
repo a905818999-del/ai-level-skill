@@ -112,6 +112,14 @@ Selection rules:
 - Use `Messy Work Rescue` only when the baseline suggests workflow/tool maturity; it is too abstract for beginners.
 - Use `Personal AI Operating System` only when the user already shows real reuse or artifact evidence.
 
+Rotation and ceiling rules:
+
+- Do not overuse `Family Travel 2.0` in the same group. For repeated colleague-group tests, rotate system-route users into `Personal Workflow Automation`, `Knowledge Product Launch`, or `Messy Work Rescue`.
+- Select the scenario from `references/scenario-bank.md`, then apply that scenario's diagnostic contract.
+- A scenario's default confirmed ceiling is not an absolute ban. It can be exceeded only when the answer meets the scenario's explicit override gate.
+- If the answer sounds higher than the scenario can confirm, report it as signal and explain what evidence would be needed to confirm it.
+- If a user gives high-level method language in a low/mid scenario, do not stretch the scenario. Ask an anchor about real artifacts, repeated runs, and cross-domain evidence; if needed, score as high signal with lower confirmed level.
+
 ### Legacy Inline Scenarios
 
 The following four prompts remain available as short fallbacks. Prefer `scenario-bank.md` for the expanded scenario set.
@@ -184,7 +192,7 @@ Construct the follow-up from the user's own claim. The follow-up is not a fixed 
 
 ### Follow-Up Composer
 
-1. Start with one sentence naming what the user already covered.
+1. Start with one sentence naming at least two concrete things the user already covered, using their own words when possible. This proves the follow-up read the answer.
 2. Identify the missing evidence gaps from this list:
    - Success standard: what counts as a good result, and what tradeoff wins when goals conflict.
    - Source rules: which facts need source, timestamp, or human confirmation.
@@ -196,11 +204,13 @@ Construct the follow-up from the user's own claim. The follow-up is not a fixed 
 4. If the user already described many tools, do not ask "which tools" again. Ask how those tools are verified and orchestrated.
 5. If the user already described validation, ask for the exact rule or threshold, not "how do you validate?"
 6. For scenario-specific wording, adapt from `references/scenario-bank.md` -> `Scenario-Specific Anchor Examples`. Delete questions the user already answered.
+7. If the answer claims Lv.8+ behavior, include at least one evidence probe about a real run, artifact, failure-based rule change, cross-domain transfer, or other-user use.
+8. Do not ask more than three numbered questions. If many gaps remain, choose the gap that controls the next-level confirmation gate.
 
 Generic shape:
 
 ```text
-你刚才已经说清楚了【用户已覆盖内容】。
+你刚才已经说清楚了【具体元素 1】和【具体元素 2】，所以我不再重复问这些。
 
 我只追问几个还没看清的点：
 

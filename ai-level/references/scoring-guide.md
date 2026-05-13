@@ -31,6 +31,39 @@ Use the table as a guide, then apply evidence gates from `rubric.md`.
 | Explains method, human/AI boundaries, transfer across domains | Lv.9 |
 | Mature multi-domain personal/team operating system | Lv.10 |
 
+## Confirmation Formula
+
+Do not confirm a level from vibe, fluency, or tool names. Compute the result this way:
+
+```text
+confirmed level = min(
+  capability shown in the practical answer,
+  evidence-strength ceiling,
+  scenario default confirmed ceiling unless an override gate is met
+)
+```
+
+Also keep a separate `signal level` when the answer hints at a higher level but cannot prove it yet.
+
+Examples:
+
+- Agent + MCP + HTML but no validation or reuse evidence: Lv.6 signal, usually confirmed Lv.6.
+- Complete reusable workflow design without real runs: Lv.7 signal, confirmed weak Lv.7 only if inputs, steps, checks, output, and failure handling are concrete.
+- Real repeated workflow with a failure-based rule change: can confirm Lv.8 if the scenario contract allows or its override gate is met.
+- Method language without concrete cross-domain cases: Lv.9 signal, do not casually confirm Lv.9.
+
+## Evidence Action Rules
+
+Map user language to evidence conservatively:
+
+- `I would...`, `I plan to...`, `I can...`: plan evidence, not artifact evidence.
+- `I made/built/wrote...`: possible artifact evidence; ask what artifact and how it can be inspected.
+- `I ran/used it twice or more...`: possible reuse evidence; ask what changed between runs.
+- `After it failed, I added...`: strong iteration evidence if the added rule/check/field is concrete.
+- `Others can use it...`: possible E5 evidence; ask what they use without the user present.
+
+Never treat "I will make a Skill" as E3 by itself. It is only a plan unless the user describes or shows the actual Skill/template/artifact.
+
 ## Baseline Routing
 
 Baseline choices are for scenario selection, not grading.
@@ -51,6 +84,7 @@ The final report should not say "your baseline route is system". It should only 
 - If there is no real artifact or case evidence, confirmed level should not exceed Lv.7.
 - If there is no reuse/iteration evidence, confirmed level should not exceed Lv.8 signal.
 - If there is no method or influence evidence, do not confirm Lv.9-Lv.10.
+- If the current scenario's default confirmed ceiling is lower than the capability signal, keep the higher level as signal only unless the scenario override gate is explicitly met.
 
 ## Report Style
 
@@ -62,6 +96,7 @@ Use plain language with a light Weibo/Xiaohongshu feel:
 - Avoid internal scoring narration.
 - Avoid stiff labels unless they help clarity.
 - Do not use mystical, grandiose, or status-heavy language.
+- Every report must include one hard reason the next level is not confirmed yet. Make it specific: missing real run, missing artifact, missing failure-based change, missing cross-domain proof, or missing other-user evidence.
 
 ## Report Template
 
@@ -78,6 +113,9 @@ Use plain language with a light Weibo/Xiaohongshu feel:
 - ……
 
 离下一级差在哪：
+……
+
+不能确认下一级的硬原因：
 ……
 
 下一步怎么升：

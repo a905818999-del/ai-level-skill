@@ -76,6 +76,24 @@ EVAL_CASES = [
         "must_include": ["方法论语言很强", "还需要跨场景真实产物或别人能用的证据"],
         "must_not_include": ["确认 Lv.10"],
     },
+    {
+        "name": "scenario-ceiling-with-override",
+        "baseline": "1C 2D 3C",
+        "scenario": "Expensive Family Purchase",
+        "answer": "我维护过一个家庭大件采购表，已经买过电脑和儿童座椅两次使用。第一次被过期测评误导后，我加了官网参数、发布时间、售后政策、退换窗口、真实评测来源和家人偏好权重字段。",
+        "expected": "默认不轻易超过 Lv.6；有重复运行和失败改规则时才允许突破为 Lv.7-Lv.8 signal",
+        "must_include": ["默认封顶", "强证据突破", "失败改规则"],
+        "must_not_include": ["从购买题直接确认 Lv.9", "工具名自动升级"],
+    },
+    {
+        "name": "workplace-jargon-downgrade",
+        "baseline": "1C 2C 3B",
+        "scenario": "Messy Work Rescue",
+        "answer": "我会让 AI 对齐各方认知，拉通优先级，形成共识，然后闭环推进。",
+        "expected": "确认 Lv.4-Lv.5",
+        "must_include": ["职场黑话不是证据", "没有事实表、争议表、行动表或决策页就不能高分"],
+        "must_not_include": ["确认 Lv.7", "确认 Lv.8"],
+    },
 ]
 
 
@@ -203,6 +221,9 @@ def render_report():
         离 Lv.8 差在哪：
         Lv.8 的核心不是“我能搭一个 Skill”，而是“这个 Skill 真跑过、真产出过、还能复用改进”。
 
+        不能确认 Lv.8 的硬原因：
+        你现在给出的证据是完整的流程设计，还不是跑过两次以上、因为真实失败改过规则的系统证据。
+
         大佬视角会这么看：你现在不缺执行力，缺的是决策标准。
 
         Agent 能帮你跑资料、出方案、做页面，但它不知道你真正认为什么叫“好”。这个标准如果不写进去，系统跑得越快，只是越快地产出一堆看起来不错、但不一定适合你的东西。
@@ -299,6 +320,7 @@ def run_checks(output):
         "基础题只负责选题，不直接定级",
         "你的 AI 应用等级：Lv.7-Lv.8｜确认 Lv.7",
         "离 Lv.8 差在哪",
+        "不能确认 Lv.8 的硬原因",
         "可分享的旅行决策页",
         "我只追三个还没看清的点",
         "你已经说了会用 workbuddy / openclaw",
@@ -315,9 +337,14 @@ def run_checks(output):
             raise AssertionError(f"eval case missing from output: {case['name']}")
         if case["expected"] not in output:
             raise AssertionError(f"eval expected result missing: {case['name']}")
+        case_block = _case_block(output, case["name"])
         for phrase in case["must_include"]:
-            if phrase not in output:
+            if phrase not in case_block:
                 raise AssertionError(f"eval required phrase missing ({case['name']}): {phrase}")
+        report_signal_block = case_block.split("Forbidden over-scoring:", 1)[0]
+        for phrase in case["must_not_include"]:
+            if phrase in report_signal_block:
+                raise AssertionError(f"eval forbidden phrase present ({case['name']}): {phrase}")
 
     lv8 = next(case for case in EVAL_CASES if case["name"] == "real-lv8-evidence")
     lv8_block = _case_block(output, lv8["name"])
@@ -336,6 +363,11 @@ def run_checks(output):
         "Personal Workflow Automation",
         "Personal AI Operating System",
         "Baseline selects the lane; practical evidence confirms the level.",
+        "Scenario Diagnostic Contracts",
+        "Default confirmed ceiling",
+        "Override gate",
+        "Tool names only",
+        "Failure-based improvement",
     ]
     for phrase in scenario_required:
         if phrase not in scenario_text:
@@ -354,6 +386,31 @@ def run_checks(output):
     for phrase in anchor_required:
         if phrase not in scenario_text:
             raise AssertionError(f"scenario-specific anchor missing: {phrase}")
+
+    scoring_guide = root / "references" / "scoring-guide.md"
+    scoring_text = scoring_guide.read_text(encoding="utf-8")
+    scoring_required = [
+        "confirmed level = min(",
+        "Evidence Action Rules",
+        "I would...",
+        "Never treat \"I will make a Skill\" as E3",
+        "Every report must include one hard reason",
+    ]
+    for phrase in scoring_required:
+        if phrase not in scoring_text:
+            raise AssertionError(f"scoring-guide phrase missing: {phrase}")
+
+    diagnostic_flow = root / "references" / "diagnostic-flow.md"
+    flow_text = diagnostic_flow.read_text(encoding="utf-8")
+    flow_required = [
+        "Rotation and ceiling rules",
+        "A scenario's default confirmed ceiling is not an absolute ban",
+        "Start with one sentence naming at least two concrete things",
+        "If the answer claims Lv.8+ behavior",
+    ]
+    for phrase in flow_required:
+        if phrase not in flow_text:
+            raise AssertionError(f"diagnostic-flow phrase missing: {phrase}")
 
 
 def _case_block(output, case_name):

@@ -34,6 +34,40 @@ Across all scenarios, look for:
 - Reuse: whether the process can be rerun.
 - Judgment: which decisions stay human.
 
+## Scenario Diagnostic Contracts
+
+Use these contracts to keep scoring consistent. A scenario's default confirmed ceiling is the normal maximum for a casual 3-5 minute run. Strong evidence can exceed it only when the override gate is explicitly met. Signal ceiling means the highest level the scenario can suggest, not confirm.
+
+| Scenario | Best for | Default confirmed ceiling | Signal ceiling | Override gate |
+| --- | --- | --- | --- | --- |
+| First Real Ask | Lv.0-Lv.3 | Lv.3 | Lv.4 | Low-baseline user gives unusually structured context, constraints, examples, and follow-up logic |
+| Weekend Plan With Mixed Preferences | Lv.1-Lv.5 | Lv.5 | Lv.6 | User describes tool-assisted preference collection plus concrete conflict and fallback rules |
+| Expensive Family Purchase | Lv.2-Lv.6 | Lv.6 | Lv.7 | User has a repeated purchase-decision workflow with source rules, reversibility checks, and artifacts |
+| Home Move And New Setup | Lv.3-Lv.7 | Lv.7 | Lv.8 signal | Real run evidence: reusable checklist or artifact, delay handling, and post-run improvement |
+| Eight-Week Learning Sprint | Lv.2-Lv.7 | Lv.7 | Lv.8 signal | Real repeated coaching flow with metrics, missed-week adjustment, and revised rules |
+| Family Travel 2.0 | Lv.3-Lv.7 | Lv.7 | Lv.8 signal | Real repeated run, shareable artifact, and failure-based rule changes |
+| Messy Work Rescue | Lv.5-Lv.7 | Lv.7 | Lv.8 signal | Multiple real projects, concrete artifacts, source authority rules, and improved intake protocol |
+| Knowledge Product Launch | Lv.5-Lv.7 | Lv.7 | Lv.9 signal | Published artifact plus audience feedback and workflow revision; cross-domain publishing method for Lv.9 signal |
+| Personal Workflow Automation | Lv.6-Lv.8 | Lv.8 | Lv.9 signal | At least two runs, one failure-based rule change, reusable artifact, and clear human decision boundary |
+| Plan Breakdown Crisis | Lv.5-Lv.7 | Lv.7 | Lv.9 signal | Reused replanning protocol plus human risk-communication principles across cases |
+| Personal AI Operating System | Lv.8-Lv.9 | Lv.9 | Lv.10 signal | E5 evidence: multi-domain system, artifacts, other-user adoption, and sustained practice |
+
+Hard downgrade triggers:
+
+- Tool names only (`Agent`, `MCP`, `Skill`, browser, plugins) without input rules, validation, output shape, or human decision boundary: confirmed level should not exceed Lv.6.
+- "I would make a Skill/workflow" without concrete inputs, steps, checks, and failure handling: treat as Lv.7 signal, not confirmation.
+- No real run, artifact, reuse, or failure-based iteration: do not confirm Lv.8.
+- No cross-domain evidence or human/AI method: do not confirm Lv.9.
+- No other-user adoption or multi-domain operating system: do not confirm Lv.10.
+- Workplace fluency without artifacts (`align stakeholders`, `close the loop`, `form consensus`) should be downgraded unless the answer names inputs, conflict representation, review artifact, and decision owner.
+
+High-score evidence must be concrete:
+
+- Artifact means a page, template, Skill, checklist, table, script, document, or other inspectable output.
+- Repeated use means at least two real runs, not "I could reuse it".
+- Failure-based improvement means a named rule, field, or check was added because a real run failed or disappointed.
+- Other-user evidence means someone can use the workflow without the user explaining every step live.
+
 ## Scenario-Specific Anchor Examples
 
 Use these as starting points for the adaptive anchor. Delete questions that the user already answered. Ask only 2-3 missing gaps.
