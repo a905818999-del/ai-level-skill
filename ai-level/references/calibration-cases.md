@@ -55,3 +55,9 @@ Expected: Lv.8-Lv.9 signal. Confirm Lv.9 only with real examples and transferabl
 Answer: "I maintain a personal skill library for travel, purchasing, learning plans, and business research. Other colleagues use parts of it. Each flow has inputs, source rules, output templates, and review rules."
 
 Expected: Lv.9-Lv.10 signal. Confirmation requires examples across domains and evidence others can use it.
+
+## Case 10: Tool-Orchestrating Planner
+
+Answer: "I would use workbuddy or openclaw, call 12306, Xiaohongshu, browser-use, and travel skills to collect enough food, transport, hotel, and activity information. I would discuss with the agent to find a plan that satisfies older adults, children, and my own interests. During the process I would ask for multiple options, give feedback, iterate, generate an HTML page for companions, and maybe turn the flow into a reusable skill."
+
+Expected: Lv.7-Lv.8 signal, confirmed Lv.7 after anchor if the user can explain missing inputs, source freshness, tool-call verification, hallucination checks, and reuse. The follow-up must not repeat "which tools or inputs" if the answer already named them. Ask only about missing decision standards, tool-use proof, and structured feedback rules.

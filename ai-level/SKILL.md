@@ -41,6 +41,7 @@ If the user already provided an answer, skip directly to scoring and generate th
 - Use a range when evidence is mixed, for example `Lv.7-Lv.8, confirmed Lv.7`.
 - Treat Lv.8+ as evidence-gated. A single theoretical answer can show Lv.8 signals, but confirmation requires real cases, artifacts, reuse, or method evidence.
 - Do not expose internal scoring thoughts before the anchor follow-up. Ask the follow-up directly and naturally.
+- The anchor follow-up must be adaptive. First note what the user already covered, then ask only about the missing 2-3 evidence gaps. Do not repeat a full checklist if the answer already mentioned inputs, tools, validation, reuse, or output.
 - Keep wording plain and non-judgmental. Say "evidence is not enough yet", not "you are bluffing".
 - Give next-level advice based on the user's actual bottleneck, not generic AI learning tips.
 
